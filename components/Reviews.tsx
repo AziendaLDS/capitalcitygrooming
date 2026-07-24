@@ -176,12 +176,21 @@ export default function Reviews() {
           >
             What Olympia Says
           </h2>
-          <p className="mt-4 font-mono text-sm text-stone">
-            {business.rating.stars}
-            <span aria-hidden="true" className="text-brass">
-              ★
-            </span>{" "}
-            · {business.rating.count} Google Reviews
+          <p className="mt-4 inline-flex items-center gap-1.5 font-mono text-sm text-stone">
+            <span className="inline-flex items-center gap-1">
+              {business.rating.stars}
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 20 20"
+                aria-hidden="true"
+                className="fill-brass"
+              >
+                <path d="M10 1.5l2.6 5.27 5.82.85-4.21 4.1.99 5.79L10 14.77l-5.2 2.73.99-5.79L1.58 7.62l5.82-.85L10 1.5z" />
+              </svg>
+            </span>
+            <span aria-hidden="true">·</span>
+            <span>{business.rating.count} Google Reviews</span>
           </p>
         </div>
 
