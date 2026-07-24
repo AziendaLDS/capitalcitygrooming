@@ -36,7 +36,7 @@ export default function Footer() {
                 href={business.mapsHref}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="transition-colors hover:text-brass"
+                className="inline-block py-1 transition-colors hover:text-brass"
               >
                 {business.address.line1}
                 <br />
@@ -45,19 +45,19 @@ export default function Footer() {
             </address>
           </div>
 
-          <div className="flex flex-wrap items-center gap-4">
+          <div className="flex flex-wrap items-center gap-3 sm:gap-4">
             <a
               href={facebookHref}
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Capital City Grooming & Supply on Facebook"
-              className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-paper/25 text-paper transition-colors hover:border-brass hover:text-brass"
+              className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border border-paper/25 text-paper transition-colors hover:border-brass hover:text-brass"
             >
               <FacebookIcon />
             </a>
             <a
               href={business.phoneHref}
-              className="inline-flex items-center justify-center rounded-lg bg-brass px-6 py-4 font-mono text-sm font-medium uppercase tracking-wider text-paper transition-colors hover:bg-[color-mix(in_srgb,var(--brass)_88%,white)]"
+              className="inline-flex min-h-11 flex-1 items-center justify-center rounded-lg bg-brass px-6 py-4 font-mono text-sm font-medium uppercase tracking-wider text-paper transition-colors hover:bg-[color-mix(in_srgb,var(--brass)_88%,white)] sm:flex-none"
             >
               Call {business.phoneDisplay}
             </a>

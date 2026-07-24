@@ -18,7 +18,13 @@
   html {
     -webkit-text-size-adjust: 100%;
     overflow-x: clip;
-    scroll-padding-top: 80px;
+    scroll-padding-top: 72px;
+  }
+
+  @media (min-width: 640px) {
+    html {
+      scroll-padding-top: 80px;
+    }
   }
 
   body {

@@ -7,7 +7,7 @@ export default function About() {
       aria-labelledby="about-heading"
       className="border-y border-forest/10"
     >
-      <div className="mx-auto grid max-w-content items-center gap-10 px-4 py-10 sm:px-6 sm:py-16 lg:grid-cols-2 lg:gap-16">
+      <div className="mx-auto grid max-w-content items-center gap-8 px-4 py-10 sm:gap-10 sm:px-6 sm:py-16 lg:grid-cols-2 lg:gap-16">
         <div className="overflow-hidden rounded-2xl border border-forest/10">
           <Image
             src="/images/about.png"
@@ -25,14 +25,14 @@ export default function About() {
           </p>
           <h2
             id="about-heading"
-            className="mt-2 font-display text-3xl font-semibold text-forest sm:text-4xl"
+            className="mt-2 font-display text-2xl font-semibold text-forest sm:text-3xl md:text-4xl"
           >
             Part grooming table, part supply counter
           </h2>
           {/* FLAG: owner name and first-person voice to be added once the client
               engages. Older Google reviews reference prior groomer Dawn - expected
               given the confirmed ownership change. */}
-          <div className="mt-6 space-y-4 font-body text-base leading-relaxed text-stone">
+          <div className="mt-5 space-y-4 font-body text-base leading-relaxed text-stone sm:mt-6 sm:text-[1.0625rem] sm:leading-relaxed">
             <p>
               Capital City Grooming &amp; Supply sits on 4th Ave E in Olympia, on
               the working end of Washington&rsquo;s capital. Now under new

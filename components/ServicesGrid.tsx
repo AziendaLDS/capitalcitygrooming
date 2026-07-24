@@ -8,13 +8,13 @@ export default function ServicesGrid() {
       aria-labelledby="services-heading"
       className="mx-auto max-w-content px-4 py-10 sm:px-6 sm:py-16"
     >
-      <div className="mb-10 flex flex-col gap-2">
+      <div className="mb-8 flex flex-col gap-2 sm:mb-10">
         <p className="font-mono text-xs font-medium uppercase tracking-[0.22em] text-brass">
           The Menu
         </p>
         <h2
           id="services-heading"
-          className="font-display text-3xl font-semibold text-forest sm:text-4xl"
+          className="font-display text-2xl font-semibold text-forest sm:text-3xl md:text-4xl"
         >
           Services
         </h2>

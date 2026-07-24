@@ -21,7 +21,7 @@ export default function ServiceTag({
   return (
     <article
       tabIndex={0}
-      className="supply-tag group relative rounded-xl border border-forest/15 bg-paper px-4 pb-6 pt-10 shadow-sm sm:px-6"
+      className="supply-tag group relative rounded-xl border border-forest/15 bg-paper px-5 pb-6 pt-10 shadow-sm sm:px-6"
       style={{ ["--tag-tilt" as string]: tilt }}
     >
       <span

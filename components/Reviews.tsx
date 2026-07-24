@@ -3,12 +3,11 @@
 import { useId } from "react";
 import reviewsData from "@/data/reviews.json";
 import { business } from "@/lib/business";
-import { useCarouselStep } from "@/lib/useCarouselStep";
+import { useCarouselStep, useVisibleCount } from "@/lib/useCarouselStep";
 
 type Review = { quote: string; name: string; rating: number };
 
 const reviews = reviewsData as Review[];
-const VISIBLE = 2;
 
 function formatAttributionName(name: string): string {
   const parts = name.trim().split(/\s+/).filter(Boolean);
@@ -60,7 +59,7 @@ function Stars({ rating }: { rating: number }) {
 
 function ReviewCard({ review }: { review: Review }) {
   return (
-    <article className="flex h-full min-w-0 flex-col rounded-xl border border-forest/10 bg-paper p-4 sm:p-6">
+    <article className="flex h-full min-w-0 flex-col rounded-xl border border-forest/10 bg-paper p-5 sm:p-6">
       <Stars rating={review.rating} />
       <blockquote className="mt-4 flex-1 whitespace-pre-line break-words font-body text-base leading-relaxed text-forest">
         {review.quote}
@@ -89,7 +88,7 @@ function ArrowButton({
       onClick={onClick}
       aria-controls={controls}
       aria-label={label}
-      className="inline-flex h-10 w-10 shrink-0 items-center justify-center self-center rounded-full border border-forest/30 bg-paper text-forest transition-colors hover:border-forest hover:bg-forest/5"
+      className="inline-flex h-11 w-11 shrink-0 items-center justify-center self-center rounded-full border border-forest/30 bg-paper text-forest transition-colors hover:border-forest hover:bg-forest/5"
     >
       <svg
         width="16"
@@ -112,8 +111,11 @@ function ArrowButton({
 
 export default function Reviews() {
   const labelId = useId();
-  const { index, panelClass, goPrev, goNext } = useCarouselStep(reviews.length);
-  const visible = wrapSlice(reviews, index, VISIBLE);
+  const visibleCount = useVisibleCount({ base: 1, md: 2 });
+  const { index, panelClass, goPrev, goNext, touchHandlers } = useCarouselStep(
+    reviews.length,
+  );
+  const visible = wrapSlice(reviews, index, visibleCount);
 
   return (
     <section
@@ -122,13 +124,13 @@ export default function Reviews() {
       className="border-y border-forest/10"
     >
       <div className="mx-auto max-w-content px-4 py-10 sm:px-6 sm:py-16">
-        <div className="mb-10">
+        <div className="mb-8 sm:mb-10">
           <p className="font-mono text-xs font-medium uppercase tracking-[0.22em] text-brass">
             Word of Mouth
           </p>
           <h2
             id="reviews-heading"
-            className="mt-2 font-display text-3xl font-semibold text-forest sm:text-4xl"
+            className="mt-2 font-display text-2xl font-semibold text-forest sm:text-3xl md:text-4xl"
           >
             What Olympia Says
           </h2>
@@ -156,9 +158,10 @@ export default function Reviews() {
             />
             <div
               id={labelId}
-              className={`${panelClass} grid min-w-0 flex-1 grid-cols-1 gap-4 md:grid-cols-2 md:gap-6`}
+              className={`${panelClass} grid min-w-0 flex-1 touch-pan-y grid-cols-1 gap-4 md:grid-cols-2 md:gap-6`}
               aria-roledescription="carousel"
               aria-label="Customer reviews"
+              {...touchHandlers}
             >
               <p className="sr-only" aria-live="polite">
                 Showing review {index + 1} of {reviews.length}

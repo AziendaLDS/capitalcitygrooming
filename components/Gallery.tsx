@@ -2,7 +2,7 @@
 
 import { useId } from "react";
 import Image from "next/image";
-import { useCarouselStep } from "@/lib/useCarouselStep";
+import { useCarouselStep, useVisibleCount } from "@/lib/useCarouselStep";
 
 const photos = [
   {
@@ -63,8 +63,6 @@ const photos = [
   },
 ];
 
-const VISIBLE = 3;
-
 function wrapSlice<T>(items: T[], start: number, count: number): T[] {
   if (items.length === 0) return [];
   return Array.from(
@@ -90,7 +88,7 @@ function ArrowButton({
       onClick={onClick}
       aria-controls={controls}
       aria-label={label}
-      className="inline-flex h-10 w-10 shrink-0 items-center justify-center self-center rounded-full border border-forest/30 bg-paper text-forest transition-colors hover:border-forest hover:bg-forest/5"
+      className="inline-flex h-11 w-11 shrink-0 items-center justify-center self-center rounded-full border border-forest/30 bg-paper text-forest transition-colors hover:border-forest hover:bg-forest/5"
     >
       <svg
         width="16"
@@ -113,8 +111,11 @@ function ArrowButton({
 
 export default function Gallery() {
   const labelId = useId();
-  const { index, panelClass, goPrev, goNext } = useCarouselStep(photos.length);
-  const visible = wrapSlice(photos, index, VISIBLE);
+  const visibleCount = useVisibleCount({ base: 1, md: 2, lg: 3 });
+  const { index, panelClass, goPrev, goNext, touchHandlers } = useCarouselStep(
+    photos.length,
+  );
+  const visible = wrapSlice(photos, index, visibleCount);
 
   return (
     <section
@@ -122,13 +123,13 @@ export default function Gallery() {
       aria-labelledby="gallery-heading"
       className="mx-auto max-w-content px-4 py-10 sm:px-6 sm:py-16"
     >
-      <div className="mb-10">
+      <div className="mb-8 sm:mb-10">
         <p className="font-mono text-xs font-medium uppercase tracking-[0.22em] text-brass">
           On the Table
         </p>
         <h2
           id="gallery-heading"
-          className="mt-2 font-display text-3xl font-semibold text-forest sm:text-4xl"
+          className="mt-2 font-display text-2xl font-semibold text-forest sm:text-3xl md:text-4xl"
         >
           Recent Visits
         </h2>
@@ -143,9 +144,10 @@ export default function Gallery() {
         />
         <div
           id={labelId}
-          className={`${panelClass} grid min-w-0 flex-1 grid-cols-1 gap-4 sm:grid-cols-3`}
+          className={`${panelClass} grid min-w-0 flex-1 touch-pan-y grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3`}
           aria-roledescription="carousel"
           aria-label="Recent grooming photos"
+          {...touchHandlers}
         >
           <p className="sr-only" aria-live="polite">
             Showing photo {index + 1} of {photos.length}
@@ -159,9 +161,10 @@ export default function Gallery() {
                 src={photo.src}
                 alt={photo.alt}
                 fill
-                sizes="(max-width: 640px) 100vw, 33vw"
+                sizes="(max-width: 768px) 85vw, (max-width: 1024px) 45vw, 33vw"
                 className="object-cover"
                 loading="lazy"
+                draggable={false}
               />
             </div>
           ))}

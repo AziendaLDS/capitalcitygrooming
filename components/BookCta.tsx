@@ -5,7 +5,7 @@ import Image from "next/image";
 import { business } from "@/lib/business";
 
 const fieldClass =
-  "mt-1 w-full rounded-lg border border-forest/15 bg-paper px-4 py-2 font-body text-base text-forest outline-none transition-colors placeholder:text-stone/60 focus-visible:border-brass focus-visible:ring-2 focus-visible:ring-brass/30";
+  "mt-1 min-h-11 w-full rounded-lg border border-forest/15 bg-paper px-4 py-3 font-body text-base text-forest outline-none transition-colors placeholder:text-stone/60 focus-visible:border-brass focus-visible:ring-2 focus-visible:ring-brass/30";
 
 const labelClass =
   "font-mono text-xs font-medium uppercase tracking-[0.18em] text-stone";
@@ -49,14 +49,14 @@ export default function BookCta() {
       aria-labelledby="book-cta-heading"
       className="bg-forest"
     >
-      <div className="mx-auto grid max-w-content gap-10 px-4 py-10 sm:px-6 sm:py-16 lg:grid-cols-2 lg:items-stretch lg:gap-16">
+      <div className="mx-auto grid max-w-content gap-8 px-4 py-10 sm:gap-10 sm:px-6 sm:py-16 lg:grid-cols-2 lg:items-stretch lg:gap-16">
         <div className="flex flex-col">
           <p className="font-mono text-xs font-medium uppercase tracking-[0.22em] text-brass">
             Appointments
           </p>
           <h2
             id="book-cta-heading"
-            className="mt-2 font-display text-3xl font-semibold text-paper sm:text-4xl"
+            className="mt-2 font-display text-2xl font-semibold text-paper sm:text-3xl md:text-4xl"
           >
             Ready to book?
           </h2>
@@ -69,17 +69,17 @@ export default function BookCta() {
           </p>
           <a
             href={business.phoneHref}
-            className="mt-2 inline-block font-display text-3xl font-semibold tracking-tight text-paper transition-colors hover:text-brass sm:text-4xl"
+            className="mt-2 inline-flex min-h-11 items-center font-display text-2xl font-semibold tracking-tight text-paper transition-colors hover:text-brass sm:text-3xl md:text-4xl"
           >
             {business.phoneDisplay}
           </a>
 
-          <div className="relative mt-4 aspect-[3/4] w-full max-w-xs overflow-hidden rounded-xl border border-paper/15 lg:aspect-auto lg:min-h-0 lg:flex-1">
+          <div className="relative mt-4 aspect-[3/4] w-full max-w-xs overflow-hidden rounded-xl border border-paper/15 sm:max-w-sm lg:aspect-auto lg:min-h-0 lg:max-w-none lg:flex-1">
             <Image
               src="/images/book.png"
               alt="Freshly groomed dog on the table at Capital City Grooming & Supply"
               fill
-              sizes="(max-width: 1024px) 80vw, 320px"
+              sizes="(max-width: 1024px) 90vw, 320px"
               className="object-cover object-top"
               loading="lazy"
             />
@@ -88,7 +88,7 @@ export default function BookCta() {
 
         <form
           onSubmit={handleSubmit}
-          className="rounded-2xl border border-paper/10 bg-paper p-4 shadow-sm sm:p-6"
+          className="rounded-2xl border border-paper/10 bg-paper p-5 shadow-sm sm:p-6"
           noValidate
         >
           <div className="grid gap-4 sm:grid-cols-2">
@@ -114,6 +114,7 @@ export default function BookCta() {
                 name="phone"
                 type="tel"
                 autoComplete="tel"
+                inputMode="tel"
                 required
                 className={fieldClass}
               />
@@ -138,7 +139,7 @@ export default function BookCta() {
                 id="book-date"
                 name="date"
                 type="date"
-                className={fieldClass}
+                className={`${fieldClass} appearance-none`}
               />
             </div>
             <div className="sm:col-span-2">
@@ -149,14 +150,14 @@ export default function BookCta() {
                 id="book-message"
                 name="message"
                 rows={4}
-                className={`${fieldClass} resize-y`}
+                className={`${fieldClass} min-h-[6.5rem] resize-y`}
               />
             </div>
           </div>
 
           <button
             type="submit"
-            className="mt-6 inline-flex w-full items-center justify-center rounded-lg bg-brass px-6 py-4 font-mono text-sm font-medium uppercase tracking-wider text-paper transition-colors hover:bg-[color-mix(in_srgb,var(--brass)_88%,black)]"
+            className="mt-6 inline-flex min-h-11 w-full items-center justify-center rounded-lg bg-brass px-6 py-4 font-mono text-sm font-medium uppercase tracking-wider text-paper transition-colors hover:bg-[color-mix(in_srgb,var(--brass)_88%,black)]"
           >
             Send Request
           </button>
