@@ -65,7 +65,10 @@ export default function Footer() {
         </div>
 
         <p className="mt-6 border-t border-paper/20 pt-4 font-mono text-xs text-paper/70">
-          © {year} Capital City Grooming &amp; Supply · Olympia, WA
+          © {year} Capital City Grooming &amp; Supply
+          <br className="sm:hidden" />
+          <span className="hidden sm:inline"> · </span>
+          Olympia, WA
         </p>
       </div>
     </footer>

@@ -24,9 +24,14 @@ export default function LocationHours() {
         </h2>
       </div>
 
-      <div className="grid grid-cols-1 gap-x-16 gap-y-6 lg:grid-cols-2 lg:items-stretch">
-        <div className="flex flex-col gap-4">
-          <div>
+      {/*
+        Mobile order (via display:contents + order):
+          address → door → maps button → map → hours
+        Desktop: left = address + button + map; right = door + hours
+      */}
+      <div className="flex flex-col gap-4 lg:grid lg:grid-cols-2 lg:items-stretch lg:gap-x-16">
+        <div className="contents lg:flex lg:flex-col lg:gap-4">
+          <div className="order-1 lg:order-none">
             <h3 className="font-mono text-xs uppercase tracking-[0.22em] text-stone">
               Address
             </h3>
@@ -41,7 +46,9 @@ export default function LocationHours() {
               {business.address.cityStateZip}
             </a>
             <p className="mt-2 font-body text-sm text-stone">
-              Entry is at the back door. The parking lot is off the alley.
+              Entry is at the back door.
+              <br />
+              The parking lot is off the alley.
               <br />
               Look for the purple door with the Capital City sign.
             </p>
@@ -51,12 +58,12 @@ export default function LocationHours() {
             href={business.mapsHref}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex min-h-11 w-full items-center justify-center rounded-lg border border-forest/40 px-6 py-4 font-mono text-sm font-medium uppercase tracking-wider text-forest transition-colors hover:border-forest hover:bg-forest/5 sm:w-fit"
+            className="order-3 inline-flex min-h-11 w-full items-center justify-center rounded-lg border border-forest/40 px-6 py-4 font-mono text-sm font-medium uppercase tracking-wider text-forest transition-colors hover:border-forest hover:bg-forest/5 sm:w-fit lg:order-none"
           >
             Open in Google Maps
           </a>
 
-          <div className="relative aspect-[4/3] w-full overflow-hidden rounded-xl border border-forest/10">
+          <div className="relative order-4 aspect-[4/3] w-full overflow-hidden rounded-xl border border-forest/10 lg:order-none">
             <iframe
               title="Capital City Grooming & Supply on Google Maps"
               src={mapsEmbedSrc}
@@ -68,8 +75,8 @@ export default function LocationHours() {
           </div>
         </div>
 
-        <div className="flex h-full flex-col gap-4">
-          <div className="relative aspect-[4/3] w-full min-h-0 flex-1 overflow-hidden rounded-xl border border-forest/10 lg:aspect-auto">
+        <div className="contents lg:flex lg:h-full lg:flex-col lg:gap-4">
+          <div className="relative order-2 aspect-[4/3] w-full min-h-0 overflow-hidden rounded-xl border border-forest/10 lg:order-none lg:aspect-auto lg:flex-1">
             <Image
               src="/images/storefront.png"
               alt="Purple back door of Capital City Grooming & Supply with the shop sign and Yes We're Open sign"
@@ -80,7 +87,7 @@ export default function LocationHours() {
             />
           </div>
 
-          <div>
+          <div className="order-5 lg:order-none">
             <h3 className="font-mono text-xs uppercase tracking-[0.22em] text-stone">
               Hours
             </h3>
