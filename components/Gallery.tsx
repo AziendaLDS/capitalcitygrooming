@@ -2,6 +2,7 @@
 
 import { useId } from "react";
 import Image from "next/image";
+import CarouselViewport from "@/components/CarouselViewport";
 import { useCarouselStep, useVisibleCount } from "@/lib/useCarouselStep";
 
 const photos = [
@@ -63,32 +64,27 @@ const photos = [
   },
 ];
 
-function wrapSlice<T>(items: T[], start: number, count: number): T[] {
-  if (items.length === 0) return [];
-  return Array.from(
-    { length: Math.min(count, items.length) },
-    (_, i) => items[(start + i) % items.length],
-  );
-}
-
 function ArrowButton({
   direction,
   onClick,
   label,
   controls,
+  disabled = false,
 }: {
   direction: "prev" | "next";
   onClick: () => void;
   label: string;
   controls: string;
+  disabled?: boolean;
 }) {
   return (
     <button
       type="button"
       onClick={onClick}
+      disabled={disabled}
       aria-controls={controls}
       aria-label={label}
-      className="inline-flex h-11 w-11 shrink-0 items-center justify-center self-center rounded-full border border-forest/30 bg-paper text-forest transition-colors hover:border-forest hover:bg-forest/5"
+      className="inline-flex h-11 w-11 shrink-0 items-center justify-center self-center rounded-full border border-forest/30 bg-paper text-forest transition-colors hover:border-forest hover:bg-forest/5 disabled:pointer-events-none disabled:opacity-40"
     >
       <svg
         width="16"
@@ -112,10 +108,8 @@ function ArrowButton({
 export default function Gallery() {
   const labelId = useId();
   const visibleCount = useVisibleCount({ base: 1, md: 2, lg: 3 });
-  const { index, panelClass, goPrev, goNext, touchHandlers } = useCarouselStep(
-    photos.length,
-  );
-  const visible = wrapSlice(photos, index, visibleCount);
+  const { index, slide, isAnimating, goPrev, goNext, touchHandlers } =
+    useCarouselStep(photos.length);
 
   return (
     <section
@@ -141,22 +135,21 @@ export default function Gallery() {
           onClick={goPrev}
           label="Previous photo"
           controls={labelId}
+          disabled={isAnimating}
         />
-        <div
-          id={labelId}
-          className={`${panelClass} grid min-w-0 flex-1 touch-pan-y grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3`}
-          aria-roledescription="carousel"
-          aria-label="Recent grooming photos"
-          {...touchHandlers}
-        >
-          <p className="sr-only" aria-live="polite">
-            Showing photo {index + 1} of {photos.length}
-          </p>
-          {visible.map((photo, i) => (
-            <div
-              key={`${photo.src}-${(index + i) % photos.length}`}
-              className="relative aspect-square overflow-hidden rounded-xl border border-forest/10"
-            >
+        <CarouselViewport
+          items={photos}
+          index={index}
+          slide={slide}
+          visibleCount={visibleCount}
+          labelId={labelId}
+          ariaLabel="Recent grooming photos"
+          gridClassName="grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3"
+          statusText={`Showing photo ${(slide?.toIndex ?? index) + 1} of ${photos.length}`}
+          touchHandlers={touchHandlers}
+          getItemKey={(photo) => photo.src}
+          renderItem={(photo) => (
+            <div className="relative aspect-square overflow-hidden rounded-xl border border-forest/10">
               <Image
                 src={photo.src}
                 alt={photo.alt}
@@ -167,13 +160,14 @@ export default function Gallery() {
                 draggable={false}
               />
             </div>
-          ))}
-        </div>
+          )}
+        />
         <ArrowButton
           direction="next"
           onClick={goNext}
           label="Next photo"
           controls={labelId}
+          disabled={isAnimating}
         />
       </div>
     </section>

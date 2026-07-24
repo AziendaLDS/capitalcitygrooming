@@ -1,9 +1,13 @@
 "use client";
 
-import { useId } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import reviewsData from "@/data/reviews.json";
 import { business } from "@/lib/business";
-import { useCarouselStep, useVisibleCount } from "@/lib/useCarouselStep";
+import CarouselViewport from "@/components/CarouselViewport";
+import {
+  useCarouselStep,
+  useVisibleCount,
+} from "@/lib/useCarouselStep";
 
 type Review = { quote: string; name: string; rating: number };
 
@@ -23,14 +27,6 @@ function formatAttributionName(name: string): string {
   const first = capitalize(parts[0]);
   const lastInitial = parts[parts.length - 1].charAt(0).toUpperCase();
   return `${first} ${lastInitial}.`;
-}
-
-function wrapSlice<T>(items: T[], start: number, count: number): T[] {
-  if (items.length === 0) return [];
-  return Array.from(
-    { length: Math.min(count, items.length) },
-    (_, i) => items[(start + i) % items.length],
-  );
 }
 
 function Stars({ rating }: { rating: number }) {
@@ -58,13 +54,58 @@ function Stars({ rating }: { rating: number }) {
 }
 
 function ReviewCard({ review }: { review: Review }) {
+  const [expanded, setExpanded] = useState(false);
+  const [showToggle, setShowToggle] = useState(false);
+  const quoteRef = useRef<HTMLQuoteElement>(null);
+  const quoteId = useId();
+
+  useEffect(() => {
+    const el = quoteRef.current;
+    if (!el) return;
+
+    const checkTruncation = () => {
+      if (expanded) {
+        setShowToggle(true);
+        return;
+      }
+      setShowToggle(el.scrollHeight > el.clientHeight + 1);
+    };
+
+    checkTruncation();
+    const observer = new ResizeObserver(checkTruncation);
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [review.quote, expanded]);
+
   return (
     <article className="flex h-full min-w-0 flex-col rounded-xl border border-forest/10 bg-paper p-5 sm:p-6">
       <Stars rating={review.rating} />
-      <blockquote className="mt-4 flex-1 whitespace-pre-line break-words font-body text-base leading-relaxed text-forest">
+
+      <blockquote
+        ref={quoteRef}
+        id={quoteId}
+        className={`mt-4 whitespace-pre-line break-words font-body text-base leading-relaxed text-forest ${
+          expanded ? "" : "line-clamp-5"
+        }`}
+      >
         {review.quote}
       </blockquote>
-      <p className="mt-4 font-mono text-sm text-stone">
+
+      <div className="mt-2 min-h-5">
+        {showToggle && (
+          <button
+            type="button"
+            onClick={() => setExpanded((open) => !open)}
+            aria-expanded={expanded}
+            aria-controls={quoteId}
+            className="font-mono text-xs font-medium uppercase tracking-wider text-brass transition-colors hover:text-forest"
+          >
+            {expanded ? "Read less" : "Read more"}
+          </button>
+        )}
+      </div>
+
+      <p className="mt-auto pt-4 font-mono text-sm text-stone">
         {formatAttributionName(review.name)}
       </p>
     </article>
@@ -76,19 +117,22 @@ function ArrowButton({
   onClick,
   label,
   controls,
+  disabled = false,
 }: {
   direction: "prev" | "next";
   onClick: () => void;
   label: string;
   controls: string;
+  disabled?: boolean;
 }) {
   return (
     <button
       type="button"
       onClick={onClick}
+      disabled={disabled}
       aria-controls={controls}
       aria-label={label}
-      className="inline-flex h-11 w-11 shrink-0 items-center justify-center self-center rounded-full border border-forest/30 bg-paper text-forest transition-colors hover:border-forest hover:bg-forest/5"
+      className="inline-flex h-11 w-11 shrink-0 items-center justify-center self-center rounded-full border border-forest/30 bg-paper text-forest transition-colors hover:border-forest hover:bg-forest/5 disabled:pointer-events-none disabled:opacity-40"
     >
       <svg
         width="16"
@@ -112,10 +156,8 @@ function ArrowButton({
 export default function Reviews() {
   const labelId = useId();
   const visibleCount = useVisibleCount({ base: 1, md: 2 });
-  const { index, panelClass, goPrev, goNext, touchHandlers } = useCarouselStep(
-    reviews.length,
-  );
-  const visible = wrapSlice(reviews, index, visibleCount);
+  const { index, slide, isAnimating, goPrev, goNext, touchHandlers } =
+    useCarouselStep(reviews.length);
 
   return (
     <section
@@ -155,29 +197,29 @@ export default function Reviews() {
               onClick={goPrev}
               label="Previous review"
               controls={labelId}
+              disabled={isAnimating}
             />
-            <div
-              id={labelId}
-              className={`${panelClass} grid min-w-0 flex-1 touch-pan-y grid-cols-1 gap-4 md:grid-cols-2 md:gap-6`}
-              aria-roledescription="carousel"
-              aria-label="Customer reviews"
-              {...touchHandlers}
-            >
-              <p className="sr-only" aria-live="polite">
-                Showing review {index + 1} of {reviews.length}
-              </p>
-              {visible.map((review, i) => (
-                <ReviewCard
-                  key={`${review.name}-${(index + i) % reviews.length}`}
-                  review={review}
-                />
-              ))}
-            </div>
+            <CarouselViewport
+              items={reviews}
+              index={index}
+              slide={slide}
+              visibleCount={visibleCount}
+              labelId={labelId}
+              ariaLabel="Customer reviews"
+              gridClassName="grid-cols-1 items-stretch gap-4 md:grid-cols-2 md:gap-6"
+              statusText={`Showing review ${(slide?.toIndex ?? index) + 1} of ${reviews.length}`}
+              touchHandlers={touchHandlers}
+              getItemKey={(review, itemIndex) =>
+                `${review.name}-${itemIndex}`
+              }
+              renderItem={(review) => <ReviewCard review={review} />}
+            />
             <ArrowButton
               direction="next"
               onClick={goNext}
               label="Next review"
               controls={labelId}
+              disabled={isAnimating}
             />
           </div>
         )}

@@ -96,37 +96,97 @@
     box-shadow: 0 10px 24px -12px rgba(31, 58, 46, 0.45);
   }
 
-  /* Soft step for reviews / gallery carousels */
-  .carousel-panel {
-    transition:
-      opacity 200ms cubic-bezier(0.22, 1, 0.36, 1),
-      transform 200ms cubic-bezier(0.22, 1, 0.36, 1);
-    opacity: 1;
-    transform: translateX(0);
+  /* Faint evergreen watermark behind the Ready to Book section only.
+     Pattern sits on a ::before layer so form/photo/text stay untouched.
+     Fill is a lighter forest sage — near-identical greens at low opacity
+     read as solid and disappear. */
+  .book-cta-section {
+    position: relative;
+    isolation: isolate;
   }
 
-  .carousel-panel--out-next {
-    opacity: 0;
-    transform: translateX(-16px);
+  .book-cta-section::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.1;
+    /* Tile has equal padding so trees never sit on the seam / section edge */
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='180' viewBox='0 0 200 180'%3E%3Cg fill='%239bb5a3'%3E%3Cpath d='M70 36l16 30h-9l14 28h-9l16 32H42l16-32h-9l14-28h-9L70 36z'/%3E%3Cpath d='M150 36l16 30h-9l14 28h-9l16 32H122l16-32h-9l14-28h-9L150 36z'/%3E%3C/g%3E%3C/svg%3E");
+    background-size: 200px 180px;
+    background-repeat: repeat;
+    background-position: 0 0;
   }
 
-  .carousel-panel--out-prev {
-    opacity: 0;
-    transform: translateX(16px);
+  .book-cta-section > * {
+    position: relative;
+    z-index: 1;
   }
 
-  .carousel-panel--pre-next,
-  .carousel-panel--pre-prev {
-    transition: none;
-    opacity: 0;
+  /* Horizontal slide for reviews / gallery carousels */
+  .carousel-slide-layer {
+    will-change: transform, opacity;
   }
 
-  .carousel-panel--pre-next {
-    transform: translateX(16px);
+  .carousel-slide-exit-next {
+    animation: carousel-exit-next 560ms cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
   }
 
-  .carousel-panel--pre-prev {
-    transform: translateX(-16px);
+  .carousel-slide-enter-next {
+    animation: carousel-enter-next 560ms cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
+  }
+
+  .carousel-slide-exit-prev {
+    animation: carousel-exit-prev 560ms cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
+  }
+
+  .carousel-slide-enter-prev {
+    animation: carousel-enter-prev 560ms cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
+  }
+
+  @keyframes carousel-exit-next {
+    from {
+      transform: translateX(0);
+      opacity: 1;
+    }
+    to {
+      transform: translateX(-100%);
+      opacity: 0.35;
+    }
+  }
+
+  @keyframes carousel-enter-next {
+    from {
+      transform: translateX(100%);
+      opacity: 0.35;
+    }
+    to {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
+
+  @keyframes carousel-exit-prev {
+    from {
+      transform: translateX(0);
+      opacity: 1;
+    }
+    to {
+      transform: translateX(100%);
+      opacity: 0.35;
+    }
+  }
+
+  @keyframes carousel-enter-prev {
+    from {
+      transform: translateX(-100%);
+      opacity: 0.35;
+    }
+    to {
+      transform: translateX(0);
+      opacity: 1;
+    }
   }
 }
 
@@ -138,6 +198,13 @@
     transform: none !important;
     transition: none !important;
     box-shadow: none;
+  }
+
+  .carousel-slide-exit-next,
+  .carousel-slide-enter-next,
+  .carousel-slide-exit-prev,
+  .carousel-slide-enter-prev {
+    animation: none !important;
   }
 
   .skip-link {

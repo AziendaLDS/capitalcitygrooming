@@ -24,77 +24,29 @@ export default function LocationHours() {
         </h2>
       </div>
 
-      {/*
-        Mobile order: address → photo → hours → maps CTA/map
-        Desktop: left = address + maps; right = photo + hours
-      */}
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2 lg:gap-x-16 lg:gap-y-4">
-        <div className="order-1 lg:col-start-1 lg:row-start-1">
-          <h3 className="font-mono text-xs uppercase tracking-[0.22em] text-stone">
-            Address
-          </h3>
-          <a
-            href={business.mapsHref}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="mt-2 inline-block font-mono text-base leading-relaxed text-forest transition-colors hover:text-brass"
-          >
-            {business.address.line1}
-            <br />
-            {business.address.cityStateZip}
-          </a>
-          <p className="mt-2 font-body text-sm text-stone">
-            Entry is at the back door. The parking lot is off the alley.
-            <br />
-            Look for the purple door with the Capital City sign.
-          </p>
-        </div>
+      <div className="grid grid-cols-1 gap-x-16 gap-y-6 lg:grid-cols-2 lg:items-stretch">
+        <div className="flex flex-col gap-4">
+          <div>
+            <h3 className="font-mono text-xs uppercase tracking-[0.22em] text-stone">
+              Address
+            </h3>
+            <a
+              href={business.mapsHref}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-2 inline-block font-mono text-base leading-relaxed text-forest transition-colors hover:text-brass"
+            >
+              {business.address.line1}
+              <br />
+              {business.address.cityStateZip}
+            </a>
+            <p className="mt-2 font-body text-sm text-stone">
+              Entry is at the back door. The parking lot is off the alley.
+              <br />
+              Look for the purple door with the Capital City sign.
+            </p>
+          </div>
 
-        <div className="relative order-2 aspect-[4/3] w-full max-w-sm overflow-hidden rounded-xl border border-forest/10 lg:col-start-2 lg:row-start-1 lg:max-w-none">
-          <Image
-            src="/images/storefront.png"
-            alt="Purple back door of Capital City Grooming & Supply with the shop sign and Yes We're Open sign"
-            fill
-            sizes="(max-width: 1024px) 90vw, 380px"
-            className="object-cover object-[center_35%]"
-            loading="lazy"
-          />
-        </div>
-
-        <div className="order-3 lg:col-start-2 lg:row-start-2">
-          <h3 className="font-mono text-xs uppercase tracking-[0.22em] text-stone">
-            Hours
-          </h3>
-          <table className="mt-2 w-full max-w-sm border-collapse font-mono text-sm lg:max-w-none">
-            <caption className="sr-only">
-              Shop hours for Capital City Grooming &amp; Supply
-            </caption>
-            <tbody>
-              {business.hours.map((row) => {
-                const closed = row.time === "Closed";
-                return (
-                  <tr key={row.day} className="border-b border-forest/10">
-                    <th
-                      scope="row"
-                      className="py-2.5 text-left font-medium text-forest"
-                    >
-                      {row.day}
-                    </th>
-                    <td
-                      className={`py-2.5 text-right ${
-                        closed ? "text-stone" : "text-forest"
-                      }`}
-                    >
-                      {row.time}
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
-
-        <div className="order-4 flex flex-col gap-4 lg:col-start-1 lg:row-start-2">
           <a
             href={business.mapsHref}
             target="_blank"
@@ -113,6 +65,52 @@ export default function LocationHours() {
               referrerPolicy="strict-origin-when-cross-origin"
               allowFullScreen
             />
+          </div>
+        </div>
+
+        <div className="flex h-full flex-col gap-4">
+          <div className="relative aspect-[4/3] w-full min-h-0 flex-1 overflow-hidden rounded-xl border border-forest/10 lg:aspect-auto">
+            <Image
+              src="/images/storefront.png"
+              alt="Purple back door of Capital City Grooming & Supply with the shop sign and Yes We're Open sign"
+              fill
+              sizes="(max-width: 1024px) 90vw, 45vw"
+              className="object-cover object-[center_35%]"
+              loading="lazy"
+            />
+          </div>
+
+          <div>
+            <h3 className="font-mono text-xs uppercase tracking-[0.22em] text-stone">
+              Hours
+            </h3>
+            <table className="mt-2 w-full max-w-sm border-collapse font-mono text-sm">
+              <caption className="sr-only">
+                Shop hours for Capital City Grooming &amp; Supply
+              </caption>
+              <tbody>
+                {business.hours.map((row) => {
+                  const closed = row.time === "Closed";
+                  return (
+                    <tr key={row.day} className="border-b border-forest/10">
+                      <th
+                        scope="row"
+                        className="py-2.5 text-left font-medium text-forest"
+                      >
+                        {row.day}
+                      </th>
+                      <td
+                        className={`py-2.5 text-right ${
+                          closed ? "text-stone" : "text-forest"
+                        }`}
+                      >
+                        {row.time}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
           </div>
         </div>
       </div>

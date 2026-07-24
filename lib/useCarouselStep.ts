@@ -8,49 +8,76 @@ import {
   type TouchEvent,
 } from "react";
 
-type Phase = "idle" | "out" | "pre";
+type Slide = {
+  fromIndex: number;
+  toIndex: number;
+  direction: 1 | -1;
+};
 
+export type { Slide };
+
+export const SLIDE_DURATION_MS = 560;
 const SWIPE_THRESHOLD_PX = 40;
 
+function prefersReducedMotion() {
+  return (
+    typeof window !== "undefined" &&
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches
+  );
+}
+
+export function wrapSlice<T>(items: T[], start: number, count: number): T[] {
+  if (items.length === 0) return [];
+  return Array.from(
+    { length: Math.min(count, items.length) },
+    (_, i) => items[(start + i) % items.length],
+  );
+}
+
 /**
- * Step-by-one carousel index with a short exit/enter slide+fade.
+ * Step-by-one carousel index with a horizontal slide transition.
  * Honors prefers-reduced-motion by swapping instantly.
- * Exposes touch handlers for swipe on touch devices.
  */
 export function useCarouselStep(length: number) {
   const [index, setIndex] = useState(0);
-  const [phase, setPhase] = useState<Phase>("idle");
-  const [dir, setDir] = useState<1 | -1>(1);
+  const [slide, setSlide] = useState<Slide | null>(null);
   const busy = useRef(false);
+  const indexRef = useRef(index);
   const touchStartX = useRef<number | null>(null);
+  const timeoutRef = useRef<number | null>(null);
 
-  const prefersReducedMotion = () =>
-    typeof window !== "undefined" &&
-    window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  indexRef.current = index;
+
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current != null) {
+        window.clearTimeout(timeoutRef.current);
+      }
+    };
+  }, []);
 
   const step = useCallback(
     (direction: 1 | -1) => {
+      // Ignore rapid clicks / swipes while a slide is in progress
       if (busy.current || length < 2) return;
 
+      const fromIndex = indexRef.current;
+      const toIndex = (fromIndex + direction + length) % length;
+
       if (prefersReducedMotion()) {
-        setIndex((i) => (i + direction + length) % length);
+        setIndex(toIndex);
         return;
       }
 
       busy.current = true;
-      setDir(direction);
-      setPhase("out");
+      setSlide({ fromIndex, toIndex, direction });
 
-      window.setTimeout(() => {
-        setIndex((i) => (i + direction + length) % length);
-        setPhase("pre");
-        requestAnimationFrame(() => {
-          requestAnimationFrame(() => {
-            setPhase("idle");
-            busy.current = false;
-          });
-        });
-      }, 200);
+      timeoutRef.current = window.setTimeout(() => {
+        setIndex(toIndex);
+        setSlide(null);
+        busy.current = false;
+        timeoutRef.current = null;
+      }, SLIDE_DURATION_MS);
     },
     [length],
   );
@@ -59,12 +86,13 @@ export function useCarouselStep(length: number) {
   const goNext = useCallback(() => step(1), [step]);
 
   const onTouchStart = useCallback((event: TouchEvent) => {
+    if (busy.current) return;
     touchStartX.current = event.touches[0]?.clientX ?? null;
   }, []);
 
   const onTouchEnd = useCallback(
     (event: TouchEvent) => {
-      if (touchStartX.current == null) return;
+      if (busy.current || touchStartX.current == null) return;
       const endX = event.changedTouches[0]?.clientX;
       const startX = touchStartX.current;
       touchStartX.current = null;
@@ -78,20 +106,10 @@ export function useCarouselStep(length: number) {
     [goNext, goPrev],
   );
 
-  const panelClass =
-    phase === "out"
-      ? dir === 1
-        ? "carousel-panel carousel-panel--out-next"
-        : "carousel-panel carousel-panel--out-prev"
-      : phase === "pre"
-        ? dir === 1
-          ? "carousel-panel carousel-panel--pre-next"
-          : "carousel-panel carousel-panel--pre-prev"
-        : "carousel-panel";
-
   return {
     index,
-    panelClass,
+    slide,
+    isAnimating: slide !== null,
     goPrev,
     goNext,
     touchHandlers: {

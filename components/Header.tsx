@@ -26,7 +26,8 @@ export default function Header() {
             aria-label="Book an Appointment"
             className="inline-flex min-h-11 items-center justify-center rounded-lg bg-brass px-4 py-3 font-mono text-[11px] font-medium uppercase tracking-wider text-paper transition-colors hover:bg-[color-mix(in_srgb,var(--brass)_88%,black)] sm:px-5 sm:text-xs"
           >
-            Book<span className="hidden sm:inline"> an Appointment</span>
+            <span className="sm:hidden">Book</span>
+            <span className="hidden sm:inline">Book an Appointment</span>
           </a>
         </div>
       </div>

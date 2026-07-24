@@ -47,10 +47,10 @@ export default function BookCta() {
     <section
       id="book"
       aria-labelledby="book-cta-heading"
-      className="bg-forest"
+      className="book-cta-section bg-forest"
     >
-      <div className="mx-auto grid max-w-content gap-8 px-4 py-10 sm:gap-10 sm:px-6 sm:py-16 lg:grid-cols-2 lg:items-stretch lg:gap-16">
-        <div className="flex flex-col">
+      <div className="mx-auto grid max-w-content gap-8 px-4 py-10 sm:gap-10 sm:px-6 sm:py-12 lg:grid-cols-2 lg:items-stretch lg:gap-16">
+        <div className="flex h-full flex-col">
           <p className="font-mono text-xs font-medium uppercase tracking-[0.22em] text-brass">
             Appointments
           </p>
@@ -74,13 +74,13 @@ export default function BookCta() {
             {business.phoneDisplay}
           </a>
 
-          <div className="relative mt-4 aspect-[3/4] w-full max-w-xs overflow-hidden rounded-xl border border-paper/15 sm:max-w-sm lg:aspect-auto lg:min-h-0 lg:max-w-none lg:flex-1">
+          <div className="relative mt-6 aspect-[4/3] w-full max-w-xs overflow-hidden rounded-xl border border-paper/15 sm:max-w-sm lg:mt-auto lg:max-w-none">
             <Image
               src="/images/book.png"
               alt="Freshly groomed dog on the table at Capital City Grooming & Supply"
               fill
-              sizes="(max-width: 1024px) 90vw, 320px"
-              className="object-cover object-top"
+              sizes="(max-width: 1024px) 90vw, 45vw"
+              className="object-cover object-[center_20%]"
               loading="lazy"
             />
           </div>
@@ -88,7 +88,7 @@ export default function BookCta() {
 
         <form
           onSubmit={handleSubmit}
-          className="rounded-2xl border border-paper/10 bg-paper p-5 shadow-sm sm:p-6"
+          className="flex h-full flex-col rounded-2xl border border-paper/10 bg-paper p-5 shadow-sm sm:p-6"
           noValidate
         >
           <div className="grid gap-4 sm:grid-cols-2">
